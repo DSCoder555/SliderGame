@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slider Puzzle</title>
+    <style>
+        .grid{
+            display: grid;
+            grid-template-columns: 202px 202px 202px 202px;
+            grid-template-rows: auto auto auto auto;
+            justify-content: center;
+        }
+        .options{
+            display: flex;
+            justify-content: center;
+        }
+        button{
+            border: 5px solid black;
+            height: 100px;
+            width: 200px;
+            margin: 1px;
+            font-size: 20px;
+            font-weight: 800;
+        }
+        #reset{
+            border: none;
+            color: green;
+        }
+        #shuffle{
+            border: none;
+            color: red;
+        }
+    </style>
+    <script>
+        moves = 0;
+        done = true;
+        pieces = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,0];
+
+        
+        function finished(){
+            for(i = 0; i < 15; i++){
+                if(pieces[i] != i+1){
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function set(){
+            moves = 0;
+            done = false;
+            pieces = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,0];
+            document.getElementById("display").innerHTML = "";
+            display();
+        }
+ 
+        function display(){
+            for(i = 0; i < 16; i++){
+                if(pieces[i] == 0){
+                    document.getElementById(i+1).innerHTML = " ";
+                    document.getElementById(i+1).style.backgroundImage = "";
+                }
+                else{
+                    document.getElementById(i+1).innerHTML = pieces[i];
+                    if(pieces[i] > 9){
+                        document.getElementById(i+1).style.backgroundImage = "url(images/image_part_0" + pieces[i] + ".jpg)";
+                        console.log("images/image_part_0" + pieces[i] + ".jpg")
+                        console.log(document.getElementById(i+1).style.backgroundImage)
+                    }
+                    else{
+                        document.getElementById(i+1).style.backgroundImage = "url(images/image_part_00" + pieces[i] + ".jpg)";
+                    }
+                }
+                
+            }
+            document.getElementById("counter").innerHTML = moves;
+        }
+
+        function shuffle(){
+            while(finished()){
+                for(i = 0; i < 1000; i++){
+                    console.log("test");
+                    shuffled = false;
+                    while(!shuffled){
+                        shuffled = nextTo(Math.floor(Math.random() * 16));
+                    }
+                }
+            }
+            display();
+        }
+ 
+        function nextTo(pos){
+            zero = pieces.indexOf(0);
+            if(pos==zero){
+                return false;
+            }
+            if((Math.floor(pos/4) != Math.floor(zero/4))&&(pos%4 != (zero%4))){
+                return false;
+            }
+            if(Math.floor(pos/4) == Math.floor(zero/4)-1 || Math.floor(pos/4) == Math.floor(zero/4)+1 || (pos%4 == (zero%4)-1 || pos%4 == (zero%4)+1 )){
+                
+                pieces[zero] = pieces[pos];
+                pieces[pos] = 0;
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+        function clicked(pos){
+            if(nextTo(pos)){
+                moves ++;
+                display();
+                if(finished() && ! done){
+                    done = true;
+                    document.getElementById("display").innerHTML = "Congrats. You solved this puzzle in " + moves + " moves."
+                }
+            }
+        }
+    </script>
+</head>
+<body onload="display();">
+    <h1 style="text-align:center">Welcome to the Sliding Puzzle!</h1>
+    <h2 style="text-align:center">Shuffle the puzzle and use the empty space to move all the pieces back into place.  Click on a piece to move it.</h2>
+    <div class="grid">
+        <button id="1" onclick="clicked(0);">1</button>
+        <button id="2" onclick="clicked(1);">2</button>
+        <button id="3" onclick="clicked(2);">3</button>
+        <button id="4" onclick="clicked(3);">4</button>
+        <button id="5" onclick="clicked(4);">5</button>
+        <button id="6" onclick="clicked(5);">6</button>
+        <button id="7" onclick="clicked(6);">7</button>
+        <button id="8" onclick="clicked(7);">8</button>
+        <button id="9" onclick="clicked(8);">9</button>
+        <button id="10" onclick="clicked(9);">10</button>
+        <button id="11" onclick="clicked(10);">11</button>
+        <button id="12" onclick="clicked(11);">12</button>
+        <button id="13" onclick="clicked(12);">13</button>
+        <button id="14" onclick="clicked(13);">14</button>
+        <button id="15" onclick="clicked(14);">15</button>
+        <button id="16" onclick="clicked(15);">16</button>
+    </div>
+    <div style="text-align:center">Counter: <span id="counter">0</span></div>
+    <div class="options">
+        <button style="text-align:center" id="reset" onclick="set();">Reset</button>
+        <button style="text-align:center" id="shuffle" onclick="shuffle();">Shuffle</button>
+    </div>
+    <div style="text-align:center" id="display"></div>
+</body>
+</html>
+
